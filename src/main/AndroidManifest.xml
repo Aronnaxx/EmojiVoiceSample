@@ -9,7 +9,7 @@
         android:supportsRtl="true">
 
         <activity
-            android:name="com.segway.robot.EmojiVoiceSample.EmojiVoiceSampleActivity"
+            android:name="com.segway.robot.EmojiVoiceSample.MainActivity"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             android:screenOrientation="landscape">

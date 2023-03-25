@@ -13,8 +13,8 @@ import com.segway.robot.sdk.locomotion.head.Head;
 
 public class HeadControlManager implements HeadControlHandler {
     private static final String TAG = "HeadControlManager";
-    private Head mHead;
-    private boolean mIsBindSuccess = false;
+    private static Head mHead;
+    private static boolean mIsBindSuccess = false;
 
     public HeadControlManager(Context context) {
         Log.d(TAG, "HeadControlHandler() called");
@@ -37,6 +37,12 @@ public class HeadControlManager implements HeadControlHandler {
             mIsBindSuccess = false;
         }
     };
+
+    public static void rotateUp() {
+        if (mIsBindSuccess) {
+            mHead.setIncrementalPitch(0.5f);
+        }
+    }
 
     @Override
     public int getMode() {

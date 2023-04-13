@@ -1,13 +1,13 @@
-package StoryTeller;
+package GamesAndActivities;
 
-import android.content.Context;
+import com.segway.robot.EmojiVoiceSample.MainActivity;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class StoryReader {
-    public static String readFileFromAssets(Context context, String fileName) throws IOException {
+    public static String readFileFromAssets(MainActivity context, String fileName) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
         String line;
 

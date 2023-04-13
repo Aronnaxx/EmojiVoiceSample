@@ -1,15 +1,12 @@
 package com.segway.robot.EmojiVoiceSample;
 
-
 import android.app.Activity;
-import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -22,7 +19,6 @@ import com.segway.robot.sdk.emoji.configure.BehaviorList;
 import com.segway.robot.sdk.emoji.exception.EmojiException;
 import com.segway.robot.sdk.emoji.player.RobotAnimator;
 import com.segway.robot.sdk.emoji.player.RobotAnimatorFactory;
-import com.segway.robot.sdk.locomotion.sbv.Base;
 import com.segway.robot.sdk.voice.Languages;
 import com.segway.robot.sdk.voice.Recognizer;
 import com.segway.robot.sdk.voice.Speaker;
@@ -33,46 +29,37 @@ import com.segway.robot.sdk.voice.recognition.RecognitionResult;
 import com.segway.robot.sdk.voice.recognition.WakeupListener;
 import com.segway.robot.sdk.voice.recognition.WakeupResult;
 import com.segway.robot.sdk.voice.tts.TtsListener;
-
 import java.io.IOException;
-import java.util.Random;
+import GamesAndActivities.SimonSays;
+import GamesAndActivities.StoryReader;
 
-import StoryTeller.StoryReader;
-
-
-/**
- * @author jacob
- */
 public class MainActivity extends Activity implements View.OnClickListener {
-    private static final String TAG = "Loomo";
-
-    private static final int ACTION_SHOW_MSG = 1;
-    private static final int ACTION_START_RECOGNITION = 2;
-    private static final int ACTION_STOP_RECOGNITION = 3;
-    private static final int ACTION_BEHAVE = 4;
-
-    private TextView mTextView;
-    private EmojiView mEmojiView;
-    private Emoji mEmoji;
-    private Recognizer mRecognizer;
-    private Speaker mSpeaker;
-    private int mSpeakerLanguage;
-    private int mRecognitionLanguage;
-    private GrammarConstraint mMoveSlotGrammar;
-    private boolean mRecognitionReady;
-    private boolean mSpeakerReady;
-    private HeadControlManager mHandcontrolManager;
-
+    public static final String TAG = "Loomo";
+    public static final int ACTION_SHOW_MSG = 1;
+    public static final int ACTION_START_RECOGNITION = 2;
+    public static final int ACTION_STOP_RECOGNITION = 3;
+    public static final int ACTION_BEHAVE = 4;
+    public static TextView mTextView;
+    public static EmojiView mEmojiView;
+    public static Emoji mEmoji;
+    public static Recognizer mRecognizer;
+    public static Speaker mSpeaker;
+    public int mSpeakerLanguage;
+    public int mRecognitionLanguage;
+    public GrammarConstraint mMoveSlotGrammar;
+    public boolean mRecognitionReady;
+    public boolean mSpeakerReady;
+    public static HeadControlManager mHandcontrolManager;
     MediaPlayer player = new MediaPlayer();
 
 
-    private ServiceBinder.BindStateListener mRecognitionBindStateListener;
-    private ServiceBinder.BindStateListener mSpeakerBindStateListener;
-    private WakeupListener mWakeupListener;
-    private RecognitionListener mRecognitionListener;
-    private TtsListener mTtsListener;
+    public ServiceBinder.BindStateListener mRecognitionBindStateListener;
+    public ServiceBinder.BindStateListener mSpeakerBindStateListener;
+    public static WakeupListener mWakeupListener;
+    public static RecognitionListener mRecognitionListener;
+    public static TtsListener mTtsListener;
 
-    private final Handler mHandler = new Handler() {
+    public static final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -155,7 +142,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 behavior = BehaviorList.LOOK_RIGHT;
                 break;
             case 2:
-                behavior = BehaviorList.LOOK_AROUND;
+                behavior = BehaviorList.LOOK_NO_NO;
                 break;
             case 3:
                 behavior = BehaviorList.LOOK_CURIOUS;
@@ -169,7 +156,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private void initListeners() {
-
         mRecognitionBindStateListener = new ServiceBinder.BindStateListener() {
             @Override
             public void onBind() {
@@ -219,8 +205,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     mSpeakerLanguage = mSpeaker.getLanguage();
                     if (mSpeakerLanguage == Languages.EN_US) {
                         try {
-                            mSpeaker.speak("Hello, my name is Loomo. Welcome to Terran Orbital's Bring Your Kids to Work Day.", mTtsListener);
-                            //mSpeaker.speak("Hi.", mTtsListener);
+                            mSpeaker.speak("Hello, my name is Loomo. Welcome to Terran Orbital.", mTtsListener);
 
                         } catch (VoiceException e) {
                             e.printStackTrace();
@@ -232,7 +217,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                             Message msg = mHandler.obtainMessage(ACTION_START_RECOGNITION);
                             mHandler.sendMessage(msg);
                         }
-                    }else {
+                    } else {
                         mEmojiView.setClickable(false);
                         Message msg = mHandler.obtainMessage(ACTION_SHOW_MSG, "Only US English is supported");
                         mHandler.sendMessage(msg);
@@ -289,7 +274,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 Message resultMsg = mHandler.obtainMessage(ACTION_SHOW_MSG, "recognition result: " + result + ", confidence:" + recognitionResult.getConfidence());
                 mHandler.sendMessage(resultMsg);
 
-               if (result.contains("look") && result.contains("left")) {
+                if (result.contains("look") && result.contains("left")) {
                     Message msg = mHandler.obtainMessage(ACTION_BEHAVE, BehaviorList.LOOK_LEFT);
                     mHandler.sendMessage(msg);
                 } else if (result.contains("look") && result.contains("right")) {
@@ -302,7 +287,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     Message msg = mHandler.obtainMessage(ACTION_BEHAVE, BehaviorList.LOOK_DOWN);
                     mHandler.sendMessage(msg);
                 } else if (result.contains("turn") && result.contains("left")) {
-                   BaseControlManager.rotateLeft();
+                    BaseControlManager.rotateLeft();
                     Message msg = mHandler.obtainMessage(ACTION_BEHAVE, BehaviorList.TURN_LEFT);
                     mHandler.sendMessage(msg);
                 } else if (result.contains("turn") && result.contains("right")) {
@@ -316,40 +301,35 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 } else if (result.contains("turn") && result.contains("full")) {
                     Message msg = mHandler.obtainMessage(ACTION_BEHAVE, BehaviorList.TURN_FULL);
                     mHandler.sendMessage(msg);
-               } else if (result.contains("move") || result.contains("go")) {
-                   if (result.contains("forward")) {
-                       BaseControlManager.moveForward();
-                   } else if (result.contains("backward")) {
-                       BaseControlManager.moveBackward();
-                   } else if ( result.contains("left")) {
-                       BaseControlManager.moveLeft();
-                   } else if (result.contains("right")) {
-                       BaseControlManager.moveRight();
-                   }
-                   else if (result.contains("up")) {
-                       playVoice();
-                       HeadControlManager.rotateUp();
-                   }
+                } else if (result.contains("move") || result.contains("go")) {
+                    if (result.contains("forward")) {
+                        BaseControlManager.moveForward();
+                    } else if (result.contains("backward")) {
+                        BaseControlManager.moveBackward();
+                    } else if (result.contains("left")) {
+                        BaseControlManager.moveLeft();
+                    } else if (result.contains("right")) {
+                        BaseControlManager.moveRight();
+                    } else if (result.contains("up")) {
+                        playVoice();
+                        HeadControlManager.rotateUp();
+                    }
 
-               }
-               else if (result.contains("Play") && result.contains("simon says")) {
-                   SimonSays();
-               }
-
-
-               else if (result.contains("Tell me a story about") && result.contains("space")) {
-                   String fileName = "Story.txt";
-                   try {
-                       String story = StoryReader.readFileFromAssets(MainActivity.this, fileName);
-                       Message msg = mHandler.obtainMessage(ACTION_BEHAVE, BehaviorList.APPLE_WOW_EMOTION);
-                       mHandler.sendMessage(msg);
-                       mSpeaker.speak(story, mTtsListener);
-                   } catch (IOException e) {
-                       e.printStackTrace();
-                   } catch (VoiceException e) {
-                       e.printStackTrace();
-                   }
-               }
+                } else if (result.contains("Play") && result.contains("simon says")) {
+                    SimonSays.SimonSays();
+                } else if (result.contains("Tell me a story about") && result.contains("space")) {
+                    String fileName = "Story.txt";
+                    try {
+                        String story = StoryReader.readFileFromAssets(MainActivity.this, fileName);
+                        Message msg = mHandler.obtainMessage(ACTION_BEHAVE, BehaviorList.APPLE_WOW_EMOTION);
+                        mHandler.sendMessage(msg);
+                        mSpeaker.speak(story, mTtsListener);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (VoiceException e) {
+                        e.printStackTrace();
+                    }
+                }
 
                 return false;
             }
@@ -405,77 +385,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mEmoji.setBaseControlHandler(new BaseControlManager(this));
     }
 
-
-    // This function, SimonSays() will be called when the robot hears "Play Simon Says". It will make the robot use a random function
-    // to move around the room. It will also make the robot say a random phrase that correlates with the movement, and a .75 chance to say "Simon Says" before each command
-    private void SimonSays() {
-        Random rand = new Random();
-        int numberOfPlays = 10; // Change this to the desired number of plays
-        BaseControlManager.baseOriginReset();
-
-        for (int i = 0; i < numberOfPlays; i++) {
-            int n = rand.nextInt(9) + 1;
-            boolean simonSays = rand.nextDouble() < 0.50; // 75% chance
-            String command = "";
-
-            if (n == 1) {
-                BaseControlManager.moveForward();
-                command = "Move Forward";
-            } else if (n == 2) {
-                BaseControlManager.moveBackward();
-                command = "Move Backward";
-            } else if (n == 3) {
-                BaseControlManager.moveLeft();
-                command = "Move Left";
-            } else if (n == 4) {
-                BaseControlManager.moveRight();
-                command = "Move Right";
-            } else if (n == 5) {
-                Message msg = mHandler.obtainMessage(ACTION_BEHAVE, BehaviorList.LOOK_RIGHT);
-                mHandler.sendMessage(msg);
-                command = "Look Right";
-            } else if (n == 6) {
-                Message msg = mHandler.obtainMessage(ACTION_BEHAVE, BehaviorList.LOOK_LEFT);
-                mHandler.sendMessage(msg);
-                command = "Look Left";
-            } else if (n == 7) {
-                Message msg = mHandler.obtainMessage(ACTION_BEHAVE, BehaviorList.LOOK_UP);
-                mHandler.sendMessage(msg);
-                command = "Look Up";
-            } else if (n == 8) {
-                Message msg = mHandler.obtainMessage(ACTION_BEHAVE, BehaviorList.LOOK_DOWN);
-                mHandler.sendMessage(msg);
-                command = "Look Down";
-            } else if (n == 9) {
-                Message msg = mHandler.obtainMessage(ACTION_BEHAVE, BehaviorList.TURN_AROUND);
-                mHandler.sendMessage(msg);
-                BaseControlManager.turnAround();
-                command = "Turn Around";
-            }
-
-            if (simonSays) {
-                command = "Simon Says " + command;
-            }
-
-            try {
-                mSpeaker.speak(command, mTtsListener);
-            } catch (VoiceException e) {
-                e.printStackTrace();
-            }
-
-            BaseControlManager.goBackToStart();
-
-            // You can add a delay between actions if you want
-            try {
-                Thread.sleep(10000); // Sleep for 10 seconds
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        BaseControlManager.goBackToStart();
-
-    }
-
     public void playVoice() {
         try {
             AssetManager assetManager = this.getAssets();
@@ -494,8 +403,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
             player.reset();
         }
     }
-
-
 
     @Override
     protected void onPause() {

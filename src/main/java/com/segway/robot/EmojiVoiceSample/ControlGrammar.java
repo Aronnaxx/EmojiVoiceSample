@@ -1,9 +1,5 @@
 package com.segway.robot.EmojiVoiceSample;
 
-import android.speech.RecognitionListener;
-import android.speech.SpeechRecognizer;
-import com.segway.robot.sdk.voice.Recognizer;
-import com.segway.robot.sdk.voice.VoiceException;
 import com.segway.robot.sdk.voice.grammar.GrammarConstraint;
 import com.segway.robot.sdk.voice.grammar.Slot;
 
